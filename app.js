@@ -23,6 +23,7 @@ startServer()
 const authRoutes = require('./routes/authRoutes')
 const userRoutes = require('./routes/userRoutes')
 const teamRoutes = require('./routes/teamRoutes')
+const tournamentRoutes = require('./routes/tournamentRoutes')
 
 
 app.use(express.json())
@@ -50,6 +51,7 @@ app.use(limiter)
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/user', userRoutes)
 app.use('/api/v1/team', teamRoutes)
+app.use('/api/v1/tournament', tournamentRoutes)
 
 // l'URL ↓
 app.get('/', (req, res) =>{
