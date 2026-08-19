@@ -1,10 +1,10 @@
 const {DataTypes} = require('sequelize')
 const {sequelize} = require('../config/db')
-const Team = require('../models/teamModel')
+const Team = require('./teamModel')
 const Tournament = require('./tournamentModel')
 
 
-const Inscription = sequelize.define('Inscription' ,{
+const Registration = sequelize.define('Registration' ,{
 
     tournament_id:{
         type: DataTypes.INTEGER,
@@ -21,4 +21,4 @@ const Inscription = sequelize.define('Inscription' ,{
 })
 
 
-module.exports = Inscription
+module.exports = Registration
