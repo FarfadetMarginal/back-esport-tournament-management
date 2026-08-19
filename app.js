@@ -20,7 +20,8 @@ const startServer = async () =>{
 } 
 startServer()
 
-// const authRoutes = require('./routes/authRoutes')
+const authRoutes = require('./routes/authRoutes')
+const userRoutes = require('./routes/userRoutes')
 
 
 app.use(express.json())
@@ -45,7 +46,8 @@ const limiter = rateLimit({
 })
 app.use(limiter)
 
-// app.use('/api/v1/auth', authRoutes)
+app.use('/api/v1/auth', authRoutes)
+app.use('/api/v1/user', userRoutes)
 
 // l'URL ↓
 app.get('/', (req, res) =>{

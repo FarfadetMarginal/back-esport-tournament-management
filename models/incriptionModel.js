@@ -1,7 +1,7 @@
 const {DataTypes} = require('sequelize')
 const {sequelize} = require('../config/db')
 const Team = require('../models/teamModel')
-const Tournament = require('./TournamentModel')
+const Tournament = require('./tournamentModel')
 
 
 const Inscription = sequelize.define('Inscription' ,{
