@@ -175,10 +175,12 @@ exports.seeStats = async (req, res) => {
         if(req.user.role!="admin"){
             return res.status(401).json({message : 'not authorized'})
         }
-        const stats = await sequelize.query('SELECT COUNT(*) AS team_number, tr.name AS tournament_name FROM "Teams" as te INNER JOIN "Registrations" as r ON te.id = r.team_id INNER JOIN "Tournaments" as tr ON tr.id = r.tournament_id WHERE tr.user_id = :userid', {replacements: { userid: req.user.id }, type:QueryTypes.SELECT}) 
+        const stats = await sequelize.query('SELECT tr.name, COUNT(*) AS team_number FROM "Registrations" as r INNER JOIN "Tournaments" as tr ON tr.id = r.tournament_id GROUP BY tr.name', {type:QueryTypes.SELECT}) 
         
         res.json(stats)
     } catch (error) {
         return res.status(500).json({message : error.message})
     }
 }
+
+//SELECT events.name_event, COUNT(*) AS number_enjoyer FROM bookings INNER JOIN events ON bookings.fk_id_event = id_event GROUP BY events.name_event;
