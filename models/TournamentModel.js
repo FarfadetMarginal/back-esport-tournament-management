@@ -1,6 +1,6 @@
 const {DataTypes} = require('sequelize')
 const {sequelize} = require('../config/db')
-
+const User = require('../models/userModel')
 
 const Tournament = sequelize.define('Tournament' ,{
     name:{
@@ -13,6 +13,12 @@ const Tournament = sequelize.define('Tournament' ,{
     },
     rules:{
         type: DataTypes.STRING,
+    },
+    user_id:{
+        type: DataTypes.INTEGER,
+        model: User,
+        key: 'id',
+        allowNull: false,
     },
 })
 

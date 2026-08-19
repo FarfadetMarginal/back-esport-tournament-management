@@ -114,3 +114,21 @@ exports.handleTeam = async (req, res) => {
         return res.status(400).json({message : error.message})
     }
 }
+
+//US14 : Supprimer une équipe (admin uniquement)
+exports.deleteTeam = async (req, res) => {
+    try {
+        if(req.user.role!="admin"){
+            return res.status(401).json({message : 'not authorized'})
+        }
+
+        const team = await Team.findByPk(req.params.id)
+        if (team==null){
+            return res.status(404).json({message : "team not found"})
+        }
+        await team.destroy()
+        res.json({message : "team deleted"})
+    } catch (error) {
+        return res.status(500).json({message : error.message})
+    }
+}

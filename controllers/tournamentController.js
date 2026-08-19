@@ -27,6 +27,7 @@ exports.createTournament = async (req, res) => {
             name,
             game, 
             rules,
+            user_id : req.user.id
         })
 
         return res.status(201).json({
@@ -36,6 +37,7 @@ exports.createTournament = async (req, res) => {
                 name: tournament.name,
                 game : tournament.game,
                 rules : tournament.rules,
+                user_id : tournament.user_id
             }
         })
     } catch (error) {
@@ -129,5 +131,54 @@ exports.joinTournament = async (req, res) => {
         
     } catch (error) {
         return res.status(400).json({message : error.message})
+    }
+}
+
+//US12 : Lister les tournois ouverts
+exports.seeTournaments = async (req, res) => {
+    try {        
+        if(!req.user.id){
+            return res.status(401).json({message : 'not connected'})
+        }
+        const tournaments = await sequelize.query('SELECT name, game, rules FROM "Tournaments" ', {type:QueryTypes.SELECT})
+        res.json(tournaments)
+    } catch (error) {
+        return res.status(500).json({message : error.message})
+    }
+}
+
+
+//US13 : Voir les équipes inscrites à un tournoi
+exports.seeMyTournaments = async (req, res) => {
+    try {        
+        if(!req.user.id){
+            return res.status(401).json({message : 'not connected'})
+        }
+        if(req.user.role != "orga" && req.user.role!="admin"){
+            return res.status(401).json({message : 'not authorized'})
+        }
+        const tournaments = await sequelize.query('SELECT te.name AS team_name, tr.name AS tournament_name FROM "Teams" as te INNER JOIN "Registrations" as r ON te.id = r.team_id INNER JOIN "Tournaments" as tr ON tr.id = r.tournament_id WHERE tr.user_id = :userid', {replacements: { userid: req.user.id }, type:QueryTypes.SELECT}) 
+        
+        res.json(tournaments)
+    } catch (error) {
+        return res.status(500).json({message : error.message})
+    }
+}
+
+
+//US15 : Voir les statistiques de participation
+exports.seeStats = async (req, res) => {
+    try {        
+        if(!req.user.id){
+            return res.status(401).json({message : 'not connected'})
+        }
+        if(req.user.role!="admin"){
+            return res.status(401).json({message : 'not authorized'})
+        }
+        const stats = await sequelize.query('SELECT COUNT(*) AS team_number, tr.name AS tournament_name FROM "Teams" as te INNER JOIN "Registrations" as r ON te.id = r.team_id INNER JOIN "Tournaments" as tr ON tr.id = r.tournament_id WHERE tr.user_id = :userid', {replacements: { userid: req.user.id }, type:QueryTypes.SELECT}) 
+        
+        res.json(stats)
+    } catch (error) {
+        return res.status(500).json({message : error.message})
     }
 }
