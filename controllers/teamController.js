@@ -57,6 +57,10 @@ exports.joinTeam = async (req, res) => {
             return res.status(401).json({message : 'team already joined'})
         }
 
+        if(team.user_id==req.user.id){
+            return res.status(401).json({message : 'captain is a member'})
+        }
+
         updatedmembers.push(req.user.id)
 
         team.members = updatedmembers
@@ -77,6 +81,7 @@ exports.handleTeam = async (req, res) => {
             return res.status(401).json({message : 'not connected'})
         }
         const team = await Team.findByPk(req.params.id)
+
         if (team==null){
             return res.status(404).json({message :  "team not found"})
         }
@@ -84,9 +89,23 @@ exports.handleTeam = async (req, res) => {
             return res.status(401).json({message : 'not authorized'})
         }
 
-        const {user_id} = req.body
+        const { userid } = req.body
 
-        team.members.push(req.user.id)
+        let updatedmembers = [...team.members]
+        
+        if(team.user_id==userid){
+            return res.status(401).json({message : 'captain is a member'})
+        }
+
+        if(updatedmembers.includes(userid)){
+            updatedmembers = updatedmembers.filter(
+                id => id !== userid
+            )
+        } else {
+            updatedmembers.push(userid)
+        }
+
+        team.members = updatedmembers
 
         const joinedTeam = await team.save()
         res.status(201).json(joinedTeam)
