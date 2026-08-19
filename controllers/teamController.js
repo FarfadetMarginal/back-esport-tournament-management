@@ -18,7 +18,6 @@ exports.createTeam = async (req, res) => {
             res.status(400).json({message : 'empty field'})
         }
 
-
         const team = await Team.create({
             name,
             user_id : req.user.id,
@@ -32,6 +31,29 @@ exports.createTeam = async (req, res) => {
                 user_id: team.user_id,
             }
         })
+    } catch (error) {
+        return res.status(400).json({message : error.message})
+    }
+}
+
+
+
+//US6 : Rejoindre une équipe
+exports.joinTeam = async (req, res) => {
+    try {
+        if(!req.user.id){
+            return res.status(401).json({message : 'not connected'})
+        }
+        const team = await Team.findByPk(req.params.id)
+        if (team==null){
+            return res.status(404).json({message :  "team not found"})
+        }
+
+        team.members.push(req.user.id)
+
+        const joinedTeam = await team.save()
+        res.status(201).json(joinedTeam)
+
     } catch (error) {
         return res.status(400).json({message : error.message})
     }
