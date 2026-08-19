@@ -17,10 +17,10 @@ const Team = sequelize.define('Team' ,{
         allowNull: false,
     },
     members:{
-        type: DataTypes.ARRAY(DataTypes.STRING),
+        type: DataTypes.ARRAY(DataTypes.INTEGER),
         defaultValue: []
     },
-})
+}) 
 
 
 module.exports = Team

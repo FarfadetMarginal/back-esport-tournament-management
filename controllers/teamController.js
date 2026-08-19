@@ -45,9 +45,46 @@ exports.joinTeam = async (req, res) => {
             return res.status(401).json({message : 'not connected'})
         }
         const team = await Team.findByPk(req.params.id)
+        
         if (team==null){
             return res.status(404).json({message :  "team not found"})
         }
+
+        
+        const updatedmembers = [...team.members]
+        
+        if(updatedmembers.includes(req.user.id)){
+            return res.status(401).json({message : 'team already joined'})
+        }
+
+        updatedmembers.push(req.user.id)
+
+        team.members = updatedmembers
+
+        const joinedTeam = await team.save()
+        res.status(201).json(joinedTeam)
+
+    } catch (error) {
+        return res.status(400).json({message : error.message})
+    }
+}
+
+
+//US7 : Gérer les membres de mon équipe
+exports.handleTeam = async (req, res) => {
+    try {
+        if(!req.user.id){
+            return res.status(401).json({message : 'not connected'})
+        }
+        const team = await Team.findByPk(req.params.id)
+        if (team==null){
+            return res.status(404).json({message :  "team not found"})
+        }
+        if(req.user.id != team.user_id){
+            return res.status(401).json({message : 'not authorized'})
+        }
+
+        const {user_id} = req.body
 
         team.members.push(req.user.id)
 
