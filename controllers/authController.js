@@ -17,7 +17,7 @@ const generateToken = (id) =>{
 }
 
 
-//US1 : Création de compte
+//US1 : Création de compte ok
 exports.register = async(req, res)=>{
     try {
         const {email, password, role} = req.body
@@ -66,7 +66,7 @@ exports.register = async(req, res)=>{
     }
 }
 
-//US2 : Connexion
+//US2 : Connexion ok
 exports.login = async (req, res) =>{
     try {
         const {email, password} = req.body

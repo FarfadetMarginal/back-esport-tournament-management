@@ -14,6 +14,14 @@ const Tournament = sequelize.define('Tournament' ,{
     rules:{
         type: DataTypes.STRING,
     },
+    beginDate:{
+        type: DataTypes.DATE,
+        allowNull: false,
+    },
+    endDate:{
+        type: DataTypes.DATE,
+        allowNull: false,
+    },
     user_id:{
         type: DataTypes.INTEGER,
         model: User,

@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken')
 
 
 
-//US5 : Créer une équipe
+//US5 : Créer une équipe  ok
 exports.createTeam = async (req, res) => {
     try {
         if(!req.user.id){
@@ -21,6 +21,7 @@ exports.createTeam = async (req, res) => {
         const team = await Team.create({
             name,
             user_id : req.user.id,
+            members : [req.user.id]
         })
 
         return res.status(201).json({
@@ -29,6 +30,7 @@ exports.createTeam = async (req, res) => {
                 id: team.id,
                 name: team.name,
                 user_id: team.user_id,
+                members: team.members,
             }
         })
     } catch (error) {
@@ -38,7 +40,7 @@ exports.createTeam = async (req, res) => {
 
 
 
-//US6 : Rejoindre une équipe
+//US6 : Rejoindre une équipe  ok
 exports.joinTeam = async (req, res) => {
     try {
         if(!req.user.id){
@@ -57,9 +59,6 @@ exports.joinTeam = async (req, res) => {
             return res.status(401).json({message : 'team already joined'})
         }
 
-        if(team.user_id==req.user.id){
-            return res.status(401).json({message : 'captain is a member'})
-        }
 
         updatedmembers.push(req.user.id)
 
@@ -74,7 +73,7 @@ exports.joinTeam = async (req, res) => {
 }
 
 
-//US7 : Gérer les membres de mon équipe
+//US7 : Gérer les membres de mon équipe  ok
 exports.handleTeam = async (req, res) => {
     try {
         if(!req.user.id){
@@ -93,10 +92,6 @@ exports.handleTeam = async (req, res) => {
 
         let updatedmembers = [...team.members]
         
-        if(team.user_id==userid){
-            return res.status(401).json({message : 'captain is a member'})
-        }
-
         if(updatedmembers.includes(userid)){
             updatedmembers = updatedmembers.filter(
                 id => id !== userid
@@ -115,7 +110,7 @@ exports.handleTeam = async (req, res) => {
     }
 }
 
-//US14 : Supprimer une équipe (admin uniquement)
+//US14 : Supprimer une équipe (admin uniquement) 
 exports.deleteTeam = async (req, res) => {
     try {
         if(req.user.role!="admin"){
@@ -128,6 +123,19 @@ exports.deleteTeam = async (req, res) => {
         }
         await team.destroy()
         res.json({message : "team deleted"})
+    } catch (error) {
+        return res.status(500).json({message : error.message})
+    }
+}
+
+//US17 : Consulter le détail d’une équipe  ok
+exports.seeTeams = async (req, res) => {
+    try {        
+        if(!req.user.id){
+            return res.status(401).json({message : 'not connected'})
+        }
+        const teams = await sequelize.query('SELECT t.name, u.email FROM "Teams" AS t INNER JOIN "Users" AS u on u.id = ANY(t.members) WHERE t.id = :id ', {replacements: { id: req.params.id }, type:QueryTypes.SELECT})
+        res.json(teams)
     } catch (error) {
         return res.status(500).json({message : error.message})
     }

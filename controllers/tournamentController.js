@@ -8,7 +8,7 @@ const Registration = require('../models/registrationModel')
 
 
 
-//US8 : Créer un tournoi
+//US8 : Créer un tournoi ok
 exports.createTournament = async (req, res) => {
     try {
         if(!req.user.id){
@@ -17,16 +17,22 @@ exports.createTournament = async (req, res) => {
         if(req.user.role != "orga" && req.user.role != "admin"){
             return res.status(401).json({message : 'not authorized'})
         }
-        const {name, game, rules} = req.body
+        const {name, game, rules, beginDate, endDate} = req.body
 
-        if(!name || !game || !rules){
+        if(!name || !game || !rules || !beginDate || !endDate){
             res.status(400).json({message : 'empty field'})
+        }
+
+        if(beginDate>endDate){
+            res.status(400).json({message : 'delorean needed'})
         }
 
         const tournament = await Tournament.create({
             name,
             game, 
             rules,
+            beginDate, 
+            endDate, 
             user_id : req.user.id
         })
 
@@ -37,6 +43,8 @@ exports.createTournament = async (req, res) => {
                 name: tournament.name,
                 game : tournament.game,
                 rules : tournament.rules,
+                beginDate: tournament.beginDate,
+                endDate: tournament.endDate,
                 user_id : tournament.user_id
             }
         })
@@ -46,7 +54,7 @@ exports.createTournament = async (req, res) => {
 }
 
 
-//US9 : Modifier un tournoi
+//US9 : Modifier un tournoi  ok
 exports.changeTournament = async (req, res) => {
     try {
         if(req.user.role != "orga" && req.user.role != "admin"){
@@ -54,6 +62,11 @@ exports.changeTournament = async (req, res) => {
         }
 
         const tournament = await Tournament.findByPk(req.params.id)
+
+        if(req.user.role = "orga" && tournament.user_id != req.user.id){
+            return res.status(401).json({message : 'not authorized'})
+        }
+
         if (tournament==null){
             return res.status(404).json({message :  "tournament not found"})
         }
@@ -66,6 +79,12 @@ exports.changeTournament = async (req, res) => {
         if (req.body.rules!=null){
             tournament.rules = req.body.rules
         }
+        if (req.body.beginDate!=null){
+            tournament.beginDate = req.body.beginDate
+        }
+        if (req.body.endDate!=null){
+            tournament.endDate = req.body.endDate
+        }
 
         const updatedtournament = await tournament.save()
 
@@ -76,7 +95,7 @@ exports.changeTournament = async (req, res) => {
     }
 }
 
-//US10 : Supprimer un tournoi
+//US10 : Supprimer un tournoi  ok
 exports.deleteTournament = async (req, res) => {
     try {
         if(req.user.role != "orga" && req.user.role!="admin"){
@@ -94,7 +113,7 @@ exports.deleteTournament = async (req, res) => {
     }
 }
 
-//US11 : Inscrire une équipe à un tournoi
+//US11 : Inscrire une équipe à un tournoi  ok
 exports.joinTournament = async (req, res) => {
     try {
 
@@ -134,7 +153,7 @@ exports.joinTournament = async (req, res) => {
     }
 }
 
-//US12 : Lister les tournois ouverts
+//US12 : Lister les tournois ouverts  ok
 exports.seeTournaments = async (req, res) => {
     try {        
         if(!req.user.id){
@@ -148,7 +167,7 @@ exports.seeTournaments = async (req, res) => {
 }
 
 
-//US13 : Voir les équipes inscrites à un tournoi
+//US13 : Voir les équipes inscrites à un tournoi  ok
 exports.seeMyTournaments = async (req, res) => {
     try {        
         if(!req.user.id){
@@ -166,7 +185,7 @@ exports.seeMyTournaments = async (req, res) => {
 }
 
 
-//US15 : Voir les statistiques de participation
+//US15 : Voir les statistiques de participation  ok
 exports.seeStats = async (req, res) => {
     try {        
         if(!req.user.id){
