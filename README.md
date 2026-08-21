@@ -143,24 +143,24 @@ mon-projet/
 
 | Méthode | Route | Description | Auth |
 |---|---|---|---|
-| POST | `/auth/register` | Créer un compte | ✗ |
-| POST | `/auth/login` | Se connecter | ✗ |
+| POST | `/auth/register` | Créer un compte | non |
+| POST | `/auth/login` | Se connecter | non |
 
 ### Utilisateurs — `/users`
 
 | Méthode | Route | Description | Auth |
 |---|---|---|---|
-| PATCH | `/users/me` | Modifier son profil | ✓ |
+| PATCH | `/users/me` | Modifier son profil | Joueur |
 | PATCH | `/users/:id/role` | Modifier le rôle d'un user | Admin |
 
 ### Équipes — `/teams`
 
 | Méthode | Route | Description | Auth |
 |---|---|---|---|
-| POST | `/teams` | Créer une équipe | ✓ |
-| PATCH | `/teams/:id/join` | Rejoindre une équipe | ✓ |
+| POST | `/teams` | Créer une équipe | Joueur |
+| PATCH | `/teams/:id/join` | Rejoindre une équipe | Joueur |
 | PATCH | `/teams/:id/members` | Ajouter/retirer un membre | Capitaine |
-| GET | `/teams/:id` | Détail d'une équipe | ✓ |
+| GET | `/teams/:id` | Détail d'une équipe | Joueur |
 | DELETE | `/teams/:id` | Supprimer une équipe | Admin |
 
 ### Tournois — `/tournaments`
@@ -170,10 +170,10 @@ mon-projet/
 | POST | `/tournaments` | Créer un tournoi | Organisateur |
 | PATCH | `/tournaments/:id` | Modifier un tournoi | Organisateur |
 | DELETE | `/tournaments/:id` | Supprimer un tournoi | Organisateur / Admin |
-| GET | `/tournaments` | Lister les tournois ouverts | ✓ |
+| GET | `/tournaments` | Lister les tournois ouverts | Joueur |
 | GET | `/tournaments/:id/teams` | Équipes inscrites à un tournoi | Organisateur |
 | GET | `/tournaments/stats` | Stats de participation | Admin |
-| POST | `/tournaments/:id/register` | Inscrire une équipe | ✓ |
-| GET | `/tournaments/my` | Mes inscriptions | ✓ |
+| POST | `/tournaments/:id/register` | Inscrire une équipe | Joueur |
+| GET | `/tournaments/my` | Mes inscriptions | Joueur |
 
 ---
