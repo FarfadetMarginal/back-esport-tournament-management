@@ -3,7 +3,6 @@ const {sequelize} = require('../config/db')
 const bcrypt = require('bcryptjs')
 
 const User = sequelize.define('User' ,{
-
     email:{
         type: DataTypes.STRING,
         allowNull: false,
@@ -30,12 +29,8 @@ const User = sequelize.define('User' ,{
     }
 })
 
-
 //comparer le mdp input avec le mdp hashé
-
 User.prototype.comparePassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password)
 }
-
-
 module.exports = User

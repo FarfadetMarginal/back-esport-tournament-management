@@ -106,7 +106,7 @@ exports.seeRegistrations = async (req, res) => {
         if(!req.user.id){
             return res.status(401).json({message : 'not connected'})
         }
-        const reg = await sequelize.query('SELECT tour.name FROM "Tournaments" AS tour INNER JOIN "Registrations" AS r ON tour.id = r.tournament_id INNER JOIN "Teams" AS te ON r.team_id = te.id INNER JOIN "Users" AS u ON u.id = ANY(te.members) WHERE u.id = :id ', {replacements: { id: req.user.id }, type:QueryTypes.SELECT})
+        const reg = await sequelize.query('SELECT tour.name, tour."beginDate", tour."endDate" FROM "Tournaments" AS tour INNER JOIN "Registrations" AS r ON tour.id = r.tournament_id INNER JOIN "Teams" AS te ON r.team_id = te.id INNER JOIN "Users" AS u ON u.id = ANY(te.members) WHERE u.id = :id ', {replacements: { id: req.user.id }, type:QueryTypes.SELECT})
         res.json(reg)
     } catch (error) {
         return res.status(500).json({message : error.message})

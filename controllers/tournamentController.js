@@ -134,6 +134,11 @@ exports.joinTournament = async (req, res) => {
             return res.status(401).json({message : 'not authorized : need to be in the team'})
         }
         
+        const existingreg = await Registration.findOne({where:{team_id:team.id, tournament_id:tournament.id}})
+        if(existingreg){
+            return res.status(401).json({message : 'tournament already joined'})
+        }
+
         const registration = await Registration.create({
             tournament_id : tournament.id,
             team_id : team.id,
@@ -176,7 +181,7 @@ exports.seeMyTournaments = async (req, res) => {
         if(req.user.role != "orga" && req.user.role!="admin"){
             return res.status(401).json({message : 'not authorized'})
         }
-        const tournaments = await sequelize.query('SELECT te.name AS team_name, tr.name AS tournament_name FROM "Teams" as te INNER JOIN "Registrations" as r ON te.id = r.team_id INNER JOIN "Tournaments" as tr ON tr.id = r.tournament_id WHERE tr.user_id = :userid', {replacements: { userid: req.user.id }, type:QueryTypes.SELECT}) 
+        const tournaments = await sequelize.query('SELECT te.name AS team_name, tr.name AS tournament_name FROM "Teams" as te INNER JOIN "Registrations" as r ON te.id = r.team_id INNER JOIN "Tournaments" as tr ON tr.id = r.tournament_id WHERE tr.user_id = :userid ORDER BY tr.name', {replacements: { userid: req.user.id }, type:QueryTypes.SELECT}) 
         
         res.json(tournaments)
     } catch (error) {

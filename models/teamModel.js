@@ -2,10 +2,7 @@ const {DataTypes} = require('sequelize')
 const {sequelize} = require('../config/db')
 const User = require('../models/userModel')
 
-
-
 const Team = sequelize.define('Team' ,{
-
     name:{
         type: DataTypes.STRING,
         allowNull: false,
@@ -21,6 +18,5 @@ const Team = sequelize.define('Team' ,{
         defaultValue: []
     },
 }) 
-
 
 module.exports = Team

@@ -52,13 +52,11 @@ exports.joinTeam = async (req, res) => {
             return res.status(404).json({message :  "team not found"})
         }
 
-        
         const updatedmembers = [...team.members]
         
         if(updatedmembers.includes(req.user.id)){
             return res.status(401).json({message : 'team already joined'})
         }
-
 
         updatedmembers.push(req.user.id)
 

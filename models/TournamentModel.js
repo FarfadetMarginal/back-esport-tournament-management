@@ -30,6 +30,5 @@ const Tournament = sequelize.define('Tournament' ,{
     },
 })
 
-
 module.exports = Tournament
 
