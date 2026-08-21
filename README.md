@@ -177,25 +177,3 @@ mon-projet/
 | GET | `/tournaments/my` | Mes inscriptions | ✓ |
 
 ---
-
-## Requêtes SQL notables
-
-**Membres d'une équipe avec leurs emails :**
-```sql
-SELECT t.name, u.email
-FROM "Teams" AS t
-INNER JOIN "Users" AS u ON u.id = ANY(t.members)
-WHERE t.id = :id
-```
-
-**Tournois auxquels un joueur est inscrit :**
-```sql
-SELECT tour.name
-FROM "Tournaments" AS tour
-INNER JOIN "Registrations" AS r ON tour.id = r.tournament_id
-INNER JOIN "Teams" AS te ON r.team_id = te.id
-INNER JOIN "Users" AS u ON u.id = ANY(te.members)
-WHERE u.id = :id
-```
-
-> `ANY` est utilisé car `members` est un tableau de foreign keys — on cherche une correspondance avec n'importe quel élément du tableau.
